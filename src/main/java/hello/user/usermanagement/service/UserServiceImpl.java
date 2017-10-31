@@ -1,5 +1,6 @@
 package hello.user.usermanagement.service;
 
+import hello.user.usermanagement.exception.BusinessException;
 import hello.user.usermanagement.model.UserObject;
 
 import java.util.ArrayList;
@@ -13,10 +14,13 @@ public class UserServiceImpl implements UserService {
 	public List<UserObject> userList = new ArrayList<UserObject>();
 
 	@Override
-	public UserObject createUser(UserObject user) {
+	public UserObject createUser(UserObject user) throws Exception{
 		for(UserObject existingUser : userList){
 			if(existingUser.getId().equals(user.getId())){
-				return null;				
+				return null;
+			}
+			if(existingUser.getEmail().equalsIgnoreCase(user.getEmail())){
+				throw new BusinessException();				
 			}
 		}
 		userList.add(user);
@@ -25,7 +29,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public UserObject updateUser(UserObject user) {
+	public UserObject updateUser(UserObject user) throws Exception{
 		for(UserObject existingUser : userList){
 			if(existingUser.getId().equals(user.getId())){
 				existingUser.setDob(user.getDob());
@@ -37,7 +41,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public Boolean deleteUser(String userId) {
+	public Boolean deleteUser(String userId) throws Exception{
 		for(UserObject existingUser : userList){
 			if(existingUser.getId().equals(userId)){
 				userList.remove(existingUser);
@@ -48,7 +52,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public UserObject fetchUser(String userId) {
+	public UserObject fetchUser(String userId) throws Exception {
 		for(UserObject existingUser : userList){
 			if(existingUser.getId().equals(userId)){
 				return existingUser;

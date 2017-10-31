@@ -1,9 +1,11 @@
 package hello.user.usermanagement.controller;
 
+import hello.user.usermanagement.exception.BusinessException;
 import hello.user.usermanagement.model.UserObject;
 import hello.user.usermanagement.service.UserService;
 
 import javax.servlet.ServletContext;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,7 +33,13 @@ public class UserController {
 	@GetMapping("/users/{userId}")
 	public ResponseEntity<?> fetchUser(@PathVariable String userId){
 		
-		UserObject user = userService.fetchUser(userId);
+		UserObject user = null;
+		try {
+			user = userService.fetchUser(userId);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		if(user != null)		
 			return new ResponseEntity<UserObject>(user, HttpStatus.OK);
 		else {
@@ -44,17 +52,24 @@ public class UserController {
 	}
 	
 	@PostMapping("/createUser")
-	public ResponseEntity<ResponseObject> createUser(@RequestBody UserObject user){
-		
-		UserObject userCreated = userService.createUser(user);
-		ResponseObject resObj;
-		if(userCreated != null){
-			resObj = new ResponseObject();
+	public ResponseEntity<ResponseObject> createUser(@Valid @RequestBody UserObject user){
+		ResponseObject resObj = new ResponseObject();
+		UserObject userCreated  = null;
+		try{
+			userCreated = userService.createUser(user);
+		}
+		catch(Exception e){
+			if (e instanceof BusinessException){
+				resObj.setResMsg("Email already taken. Cannot create user with same email.");
+				resObj.setUserId(user.getId());
+				return new ResponseEntity<ResponseObject>(resObj, HttpStatus.BAD_REQUEST);
+			}
+		}		
+		if(userCreated != null){			
 			resObj.setResMsg("User created successfully");
 			resObj.setUserId(userCreated.getId());
 			return new ResponseEntity<ResponseObject>(resObj, HttpStatus.CREATED);
-		}else{
-			resObj = new ResponseObject();
+		}else{			
 			resObj.setResMsg("User already exists");
 			resObj.setUserId(user.getId());
 			return new ResponseEntity<ResponseObject>(resObj, HttpStatus.BAD_REQUEST);
@@ -63,9 +78,15 @@ public class UserController {
 	}
 	
 	@PostMapping("/updateUser")
-	public ResponseEntity<ResponseObject> updateUser(@RequestBody UserObject user, RedirectAttributes redirectAttributes){
+	public ResponseEntity<ResponseObject> updateUser(@Valid @RequestBody UserObject user, RedirectAttributes redirectAttributes){
 		
-		UserObject userUpdated = userService.updateUser(user);
+		UserObject userUpdated = null;
+		try {
+			userUpdated = userService.updateUser(user);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		ResponseObject resObj;
 		if(userUpdated != null){
 			resObj = new ResponseObject();
@@ -85,7 +106,13 @@ public class UserController {
 	
 	@DeleteMapping("/deleteUser/{userId}")
 	public ResponseEntity<ResponseObject> deleteUser(@PathVariable String userId, RedirectAttributes redirectAttributes){
-		Boolean res = userService.deleteUser(userId);
+		Boolean res = null;
+		try {
+			res = userService.deleteUser(userId);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		if(res == Boolean.TRUE){
 			ResponseObject resObj = new ResponseObject();
 			resObj.setResMsg("User deleted successfully");
