@@ -1,6 +1,7 @@
 package hello.user.usermanagement;
 
 import static org.junit.Assert.assertEquals;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import hello.user.usermanagement.controller.UserController;
 import hello.user.usermanagement.model.UserObject;
 import hello.user.usermanagement.service.UserService;
@@ -14,12 +15,13 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
+import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(value = UserController.class, secure =false)
@@ -36,10 +38,12 @@ public class UserControllerTest {
     UserObject mockUser = new UserObject();
 	
     String exampleUserJson = "{\"id\":\"123423\",\"fName\":\"John\",\"lName\":\"Matt\",\"email\":\"John.Smith@gmail.com\",\"pinCode\":\"123456\"}";
+    
+    String resultJson = "{\"resMsg\":\"User created successfully\",\"userId\":\"1234\",\"valErrors\":null}";
 
     @Test
     public void shouldCreateUser() throws Exception {
-    	mockUser.setId("1234");
+    	mockUser.setId("4444");
     	mockUser.setfName("John");
     	mockUser.setlName("Matt");
     	mockUser.setEmail("test@test.com");
@@ -49,45 +53,89 @@ public class UserControllerTest {
     			
     	RequestBuilder requestBuilder = MockMvcRequestBuilders
 				.post("/createUser")
-				.accept(MediaType.APPLICATION_JSON).content(exampleUserJson).contentType(MediaType.APPLICATION_JSON);
+				.accept(MediaType.APPLICATION_JSON)
+				.content(exampleUserJson)
+				.contentType(MediaType.APPLICATION_JSON);
 
-		MvcResult result = mockMvc.perform(requestBuilder).andReturn();
+			
+    	ResultMatcher expectedMsg = MockMvcResultMatchers.jsonPath("resMsg").value("User created successfully");
+    	ResultMatcher expectedId =  MockMvcResultMatchers.jsonPath("userId").value("4444");
+    	
+		mockMvc.perform(requestBuilder).andExpect(status().isCreated())
+										.andExpect(expectedMsg)
+										.andExpect(expectedId);
 		
-		//result.getModelAndView().
-
-		System.out.println(result.getResponse());
-		
-		MockHttpServletResponse response = result.getResponse();
-		
-		String resObject = response.getContentAsString();
-
-		assertEquals(HttpStatus.CREATED.value(), response.getStatus());
-
-		/*assertEquals("User created successfully",
-				((ResponseEntity<ResponseObject>)(response.get).getResMsg());*/
-
-
     }
     
     @Test
     public void shoutFetchUser() throws Exception{
+    	mockUser.setId("4444");
     	mockUser.setfName("John");
     	mockUser.setlName("Matt");
     	mockUser.setEmail("test@test.com");
 
     	Mockito.when(userService.fetchUser(Mockito.anyString())).thenReturn(mockUser);
     	
-    	RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/users/123423").accept(MediaType.APPLICATION_JSON);
+    	RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/users/4444").accept(MediaType.APPLICATION_JSON);
+    	    	
     	
-    	MvcResult mvcResult = mockMvc.perform(requestBuilder).andReturn();
+    	ResultMatcher expectedId =  MockMvcResultMatchers.jsonPath("id").value("4444");
+    	ResultMatcher expectedfName = MockMvcResultMatchers.jsonPath("fName").value("John");
+    	ResultMatcher expectedEmail = MockMvcResultMatchers.jsonPath("email").value("test@test.com");
     	
-    	System.out.println(mvcResult.getResponse());
+		mockMvc.perform(requestBuilder).andExpect(status().isOk())
+										.andExpect(expectedId)
+										.andExpect(expectedfName)
+										.andExpect(expectedEmail);
+    	    	
+    }
+    
+    @Test
+    public void shouldUpdateUser() throws Exception {
+    	mockUser.setId("4444");
+    	mockUser.setfName("John");
+    	mockUser.setlName("Matt");
+    	mockUser.setEmail("test@test.com");
+
     	
-    	assertEquals(HttpStatus.OK.value(), mvcResult.getResponse().getStatus());
-    	//String expected = "";
+    	Mockito.when(userService.updateUser(Mockito.any(UserObject.class))).thenReturn(mockUser);
+    			
+    	RequestBuilder requestBuilder = MockMvcRequestBuilders
+				.post("/updateUser")
+				.accept(MediaType.APPLICATION_JSON)
+				.content(exampleUserJson)
+				.contentType(MediaType.APPLICATION_JSON);
+
+			
+    	ResultMatcher expectedMsg = MockMvcResultMatchers.jsonPath("resMsg").value("User updated successfully");
+    	ResultMatcher expectedId =  MockMvcResultMatchers.jsonPath("userId").value("4444");
     	
-    	//JSONAssert.assertEquals(expected, mvcResult.getResponse().getContentAsString(), false);
+		mockMvc.perform(requestBuilder).andExpect(status().isCreated())
+										.andExpect(expectedMsg)
+										.andExpect(expectedId);
+		
+    }
+    
+    @Test
+    public void shouldDeleteUser() throws Exception {
+    	mockUser.setId("4444");
+    	mockUser.setfName("John");
+    	mockUser.setlName("Matt");
+    	mockUser.setEmail("test@test.com");
+
     	
+    	Mockito.when(userService.deleteUser(Mockito.anyString())).thenReturn(Boolean.TRUE);
+    			
+    	RequestBuilder requestBuilder = MockMvcRequestBuilders
+				.delete("/deleteUser/4444");
+				
+    	ResultMatcher expectedMsg = MockMvcResultMatchers.jsonPath("resMsg").value("User deleted successfully");
+    	ResultMatcher expectedId =  MockMvcResultMatchers.jsonPath("userId").value("4444");
+    	
+		mockMvc.perform(requestBuilder).andExpect(status().isOk())
+										.andExpect(expectedMsg)
+										.andExpect(expectedId);
+		
     }
 
    
