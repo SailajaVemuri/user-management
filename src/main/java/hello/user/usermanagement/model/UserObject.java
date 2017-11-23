@@ -31,6 +31,8 @@ public class UserObject {
 	@DateTimeFormat(pattern="yyyy-MM-dd")
 	private Date dob;
 	
+	private Boolean isActive;
+	
 	public String getId() {
 		return id;
 	}
@@ -66,6 +68,12 @@ public class UserObject {
 	}
 	public void setDob(Date dob) {
 		this.dob = dob;
+	}
+	public Boolean getIsActive() {
+		return isActive;
+	}
+	public void setIsActive(Boolean isActive) {
+		this.isActive = isActive;
 	}
 	
 	

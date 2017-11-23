@@ -58,19 +58,22 @@ public class UserController {
 		try{
 			userCreated = userService.createUser(user);
 		}
-		catch(Exception e){
-			if (e instanceof BusinessException){
-				resObj.setResMsg("Email already taken. Cannot create user with same email.");
-				resObj.setUserId(user.getId());
-				return new ResponseEntity<ResponseObject>(resObj, HttpStatus.BAD_REQUEST);
-			}
+		catch(BusinessException e){
+			resObj.setResMsg("User creation Failed");
+			resObj.setUserId(user.getId());
+			resObj.addValError(new ValError(e.getErrCode(), e.getErrField(), e.getErrMsg()));
+			return new ResponseEntity<ResponseObject>(resObj, HttpStatus.BAD_REQUEST);
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}		
 		if(userCreated != null){			
 			resObj.setResMsg("User created successfully");
 			resObj.setUserId(userCreated.getId());
 			return new ResponseEntity<ResponseObject>(resObj, HttpStatus.CREATED);
 		}else{			
-			resObj.setResMsg("User already exists");
+			resObj.setResMsg("User creation failed");
 			resObj.setUserId(user.getId());
 			return new ResponseEntity<ResponseObject>(resObj, HttpStatus.BAD_REQUEST);
 		}

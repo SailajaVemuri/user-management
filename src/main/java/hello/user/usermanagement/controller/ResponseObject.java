@@ -1,12 +1,15 @@
 package hello.user.usermanagement.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class ResponseObject {
 	private String resMsg;
 	
 	private String userId;
 	
-	private String  valErrors;
+	private List<ValError> valErrors = new ArrayList<ValError>();
 	
 	public String getResMsg() {
 		return resMsg;
@@ -22,11 +25,15 @@ public class ResponseObject {
 		this.userId = userId;
 	}
 	
-	public String getValErrors() {
+	public List<ValError> getValErrors() {
 		return valErrors;
 	}
-	public void setValErrors(String valErrors) {
+	public void setValErrors(List<ValError> valErrors) {
 		this.valErrors = valErrors;
+	}
+	
+	public void addValError(ValError valErr){
+		valErrors.add(valErr);
 	}
 	
 }

@@ -2,6 +2,8 @@ package hello.user.usermanagement;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import hello.user.usermanagement.controller.UserController;
+import hello.user.usermanagement.exception.BusinessException;
+import hello.user.usermanagement.exception.ERR_CODES;
 import hello.user.usermanagement.model.UserObject;
 import hello.user.usermanagement.service.UserService;
 
@@ -62,6 +64,31 @@ public class UserControllerTest {
 										.andExpect(expectedMsg)
 										.andExpect(expectedId);
 		
+	    }
+    
+    
+    //Test for user creation failure on using same userid
+    @Test
+    public void shouldFailCreateUser() throws Exception {
+    	
+    	BusinessException bre = new BusinessException(ERR_CODES.USER_EXISTS, "", "");
+
+    	
+    	Mockito.when(userService.createUser(Mockito.any(UserObject.class))).thenThrow(bre);
+    			
+    	RequestBuilder requestBuilder = MockMvcRequestBuilders
+				.post("/createUser")
+				.accept(MediaType.APPLICATION_JSON)
+				.content(exampleUserJson)
+				.contentType(MediaType.APPLICATION_JSON);
+   	
+    	ResultMatcher expectedMsg = MockMvcResultMatchers.jsonPath("resMsg").value("User creation Failed");
+    	ResultMatcher expectedId =  MockMvcResultMatchers.jsonPath("userId").value("123423");
+    	
+		mockMvc.perform(requestBuilder).andExpect(status().isBadRequest())
+										.andExpect(expectedMsg)
+										.andExpect(expectedId);
+				
     }
     
     @Test
