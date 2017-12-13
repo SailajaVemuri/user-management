@@ -4,21 +4,20 @@ import hello.user.usermanagement.exception.BusinessException;
 import hello.user.usermanagement.model.UserObject;
 import hello.user.usermanagement.service.UserService;
 
-import javax.servlet.ServletContext;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-@Controller
+@RestController
 public class UserController {
 	private final UserService userService;
 	
@@ -27,10 +26,9 @@ public class UserController {
 		this.userService = userService;
 	}
 	
-	@Autowired
-	 ServletContext context;
 	
-	@GetMapping("/users/{userId}")
+	
+	@GetMapping("/user/{userId}")
 	public ResponseEntity<?> fetchUser(@PathVariable String userId){
 		
 		UserObject user = null;
@@ -51,7 +49,7 @@ public class UserController {
 			
 	}
 	
-	@PostMapping("/createUser")
+	@PostMapping("/user/createUser")
 	public ResponseEntity<ResponseObject> createUser(@Valid @RequestBody UserObject user){
 		ResponseObject resObj = new ResponseObject();
 		UserObject userCreated  = null;
@@ -80,7 +78,7 @@ public class UserController {
 				
 	}
 	
-	@PostMapping("/updateUser")
+	@PostMapping("/user/updateUser")
 	public ResponseEntity<ResponseObject> updateUser(@Valid @RequestBody UserObject user, RedirectAttributes redirectAttributes){
 		
 		UserObject userUpdated = null;
@@ -107,7 +105,7 @@ public class UserController {
 		
 	}
 	
-	@DeleteMapping("/deleteUser/{userId}")
+	@DeleteMapping("/user/deleteUser/{userId}")
 	public ResponseEntity<ResponseObject> deleteUser(@PathVariable String userId, RedirectAttributes redirectAttributes){
 		Boolean res = null;
 		try {
