@@ -1,12 +1,9 @@
 package hello.user.usermanagement.controller;
 
-import hello.user.usermanagement.exception.BusinessException;
-import hello.user.usermanagement.model.UserObject;
-import hello.user.usermanagement.service.UserService;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,19 +14,25 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import hello.user.usermanagement.exception.BusinessException;
+import hello.user.usermanagement.model.UserObject;
+import hello.user.usermanagement.service.UserService;
+
 @RestController
 public class UserController {
-	private final UserService userService;
 	
 	@Autowired
-	public UserController(UserService userService){
+	@Qualifier("mongodb")
+	private  UserService userService;
+		
+	/*public UserController(UserService userService){
 		this.userService = userService;
 	}
-	
+	*/
 	
 	
 	@GetMapping("/user/{userId}")
-	public ResponseEntity<?> fetchUser(@PathVariable String userId){
+	public ResponseEntity<?> fetchUser(@PathVariable Long userId){
 		
 		UserObject user = null;
 		try {
@@ -106,7 +109,7 @@ public class UserController {
 	}
 	
 	@DeleteMapping("/user/deleteUser/{userId}")
-	public ResponseEntity<ResponseObject> deleteUser(@PathVariable String userId, RedirectAttributes redirectAttributes){
+	public ResponseEntity<ResponseObject> deleteUser(@PathVariable Long userId, RedirectAttributes redirectAttributes){
 		Boolean res = null;
 		try {
 			res = userService.deleteUser(userId);

@@ -7,7 +7,7 @@ import java.util.List;
 public class ResponseObject {
 	private String resMsg;
 	
-	private String userId;
+	private Long userId;
 	
 	private List<ValError> valErrors = new ArrayList<ValError>();
 	
@@ -17,11 +17,11 @@ public class ResponseObject {
 	public void setResMsg(String resMsg) {
 		this.resMsg = resMsg;
 	}
-	public String getUserId() {
+	public Long getUserId() {
 		return userId;
 	}
 	
-	public void setUserId(String userId){
+	public void setUserId(Long userId){
 		this.userId = userId;
 	}
 	

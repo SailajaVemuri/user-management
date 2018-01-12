@@ -1,15 +1,17 @@
 package hello.user.usermanagement.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
 import hello.user.usermanagement.exception.BusinessException;
 import hello.user.usermanagement.exception.ERR_CODES;
 import hello.user.usermanagement.model.UserObject;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-
 @Service
+@Qualifier("list")
 public class UserServiceImpl implements UserService {
 	
 	public List<UserObject> userList = new ArrayList<UserObject>();
@@ -43,9 +45,9 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public Boolean deleteUser(String userId) throws Exception{
+	public Boolean deleteUser(Long userId) throws Exception{
 		for(UserObject existingUser : userList){
-			if(existingUser.getId().equals(userId)){
+			if(existingUser.getId() == userId){
 				//userList.remove(existingUser);
 				existingUser.setIsActive(Boolean.FALSE);
 				return Boolean.TRUE;
@@ -55,9 +57,9 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public UserObject fetchUser(String userId) throws Exception {
+	public UserObject fetchUser(Long userId) throws Exception {
 		for(UserObject existingUser : userList){
-			if(existingUser.getId().equals(userId)){
+			if(existingUser.getId() == userId){
 				return existingUser;
 			}
 		}

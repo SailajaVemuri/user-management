@@ -7,13 +7,18 @@ import javax.validation.constraints.Past;
 import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.Email;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.format.annotation.DateTimeFormat;
 
+@Document(collection = "user")
 public class UserObject {
 	
+	@Id
 	@NotNull
-	@Size(min=1, message = "Enter valid userid")
-	private String id;
+	//@Size(min=1, message = "Enter valid userid")
+	private Long id;
 	
 	@NotNull
 	private String fName;
@@ -21,6 +26,7 @@ public class UserObject {
 	@NotNull
 	private String lName;
 	
+	@Indexed(unique=true)
 	@NotNull
 	@Email(message="Enter valid email address")
 	private String email;
@@ -33,10 +39,10 @@ public class UserObject {
 	
 	private Boolean isActive;
 	
-	public String getId() {
+	public Long getId() {
 		return id;
 	}
-	public void setId(String id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 	public String getfName() {

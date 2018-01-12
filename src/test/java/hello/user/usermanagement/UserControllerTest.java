@@ -42,7 +42,7 @@ public class UserControllerTest {
 
     @Test
     public void shouldCreateUser() throws Exception {
-    	mockUser.setId("4444");
+    	mockUser.setId(4444L);
     	mockUser.setfName("John");
     	mockUser.setlName("Matt");
     	mockUser.setEmail("test@test.com");
@@ -93,12 +93,12 @@ public class UserControllerTest {
     
     @Test
     public void shoutFetchUser() throws Exception{
-    	mockUser.setId("4444");
+    	mockUser.setId(4444L);
     	mockUser.setfName("John");
     	mockUser.setlName("Matt");
     	mockUser.setEmail("test@test.com");
 
-    	Mockito.when(userService.fetchUser(Mockito.anyString())).thenReturn(mockUser);
+    	Mockito.when(userService.fetchUser(Mockito.anyLong())).thenReturn(mockUser);
     	
     	RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/users/4444").accept(MediaType.APPLICATION_JSON);
     	    	
@@ -116,7 +116,7 @@ public class UserControllerTest {
     
     @Test
     public void shouldUpdateUser() throws Exception {
-    	mockUser.setId("4444");
+    	mockUser.setId(4444L);
     	mockUser.setfName("John");
     	mockUser.setlName("Matt");
     	mockUser.setEmail("test@test.com");
@@ -142,13 +142,13 @@ public class UserControllerTest {
     
     @Test
     public void shouldDeleteUser() throws Exception {
-    	mockUser.setId("4444");
+    	mockUser.setId(4444L);
     	mockUser.setfName("John");
     	mockUser.setlName("Matt");
     	mockUser.setEmail("test@test.com");
 
     	
-    	Mockito.when(userService.deleteUser(Mockito.anyString())).thenReturn(Boolean.TRUE);
+    	Mockito.when(userService.deleteUser(Mockito.anyLong())).thenReturn(Boolean.TRUE);
     			
     	RequestBuilder requestBuilder = MockMvcRequestBuilders
 				.delete("/deleteUser/4444");
