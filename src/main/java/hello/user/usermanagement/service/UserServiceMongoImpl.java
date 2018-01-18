@@ -19,11 +19,17 @@ public class UserServiceMongoImpl implements UserService {
 	@Override
 	public UserObject createUser(UserObject user) throws Exception {
 		
-		UserObject existingUser = userRepository.findById(user.getId());
-		if(existingUser != null && existingUser.getIsActive())
+		//UserObject existingUser = userRepository.findById(user.getId());
+		//if(existingUser != null && existingUser.getIsActive())
+		
+		//validate if user already exists
+		
+		UserObject user1 = userRepository.findUserExists(user.getId());
+		if(user1 != null)	
 			throw new BusinessException(ERR_CODES.USER_EXISTS, "Id", "User already exists");
+		
 		//validate for unique email for all users
-		existingUser = userRepository.findByEmail(user.getEmail());
+		UserObject existingUser = userRepository.findByEmail(user.getEmail());
 		if(existingUser != null)
 			throw new BusinessException(ERR_CODES.USER_EMAIL_EXISTS, "email", "Email already exists");
 		
@@ -59,7 +65,8 @@ public class UserServiceMongoImpl implements UserService {
 
 	@Override
 	public UserObject fetchUser(Long userId) throws Exception {
-		return userRepository.findById(userId);
+		UserObject user1 = userRepository.findById(userId);
+		return user1;
 	}
 
 }

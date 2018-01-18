@@ -7,4 +7,4 @@ public interface UserService {
 	public UserObject updateUser(UserObject user) throws Exception;
 	public Boolean deleteUser(Long userId) throws Exception;
 	public UserObject fetchUser(Long userId) throws Exception;
-}
+	}

@@ -1,5 +1,7 @@
 package hello.user.usermanagement.controller;
 
+import java.util.Collection;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import hello.user.usermanagement.exception.BusinessException;
 import hello.user.usermanagement.model.UserObject;
+import hello.user.usermanagement.model.UserRepository;
 import hello.user.usermanagement.service.UserService;
 
 @RestController
@@ -24,6 +27,9 @@ public class UserController {
 	@Autowired
 	@Qualifier("mongodb")
 	private  UserService userService;
+	
+	@Autowired
+	private UserRepository userRepository;
 		
 	/*public UserController(UserService userService){
 		this.userService = userService;
@@ -50,6 +56,11 @@ public class UserController {
 			return new ResponseEntity<ResponseObject>(resObj, HttpStatus.OK);
 		}
 			
+	}
+	
+	@GetMapping("/users")
+	public Collection<UserObject> fetchUsers(){
+		return userRepository.findAll();
 	}
 	
 	@PostMapping("/user/createUser")
