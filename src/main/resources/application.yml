@@ -1,7 +1,7 @@
 #Spring properties
-spring:
- application:
-  name: user-service
+#spring:
+ #application:
+ # name: user-service
  
 #Discovery Server Access
 #eureka:
@@ -10,9 +10,9 @@ spring:
    # defaultZone: http://localhost:1111/eureka/
 # HTTP Server
 #server:
- # port: 2222   # HTTP (Tomcat) port
+#  port: 2222   # HTTP (Tomcat) port
 
 # Disable Spring Boot's "Whitelabel" default error page, so we can use our own
-error:
-  whitelabel:
-    enabled: false
+#error:
+ # whitelabel:
+  #  enabled: false
